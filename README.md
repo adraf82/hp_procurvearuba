@@ -42,7 +42,6 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -68,7 +67,7 @@ find_switch_serial_number function which displays the serial number of the switc
 ```
 There are many other practical functions in the hp_procurvearuba library such as functions for backing up configuration files, uploading configuration files and loading firmware with tftp and sftp.
 
-To view the full list of functions and docstrings inclued in the library see the procurvearuba module [here](https://github.com/adraf82/hp_procurvearuba/tree/master/hp_procurvearuba)
+To view the full list of functions and docstrings inclued in the library see the procurvearuba module [here](https://github.com/adraf82/hp_procurvearuba/tree/main/src/hp_procurvearuba)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
