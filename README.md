@@ -127,7 +127,9 @@ Invoke the function you require;
 hp_obj.sftp_backup_config('192.168.1.3')
 ```
 
-<!- USAGE EXAMPLES -->
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- USAGE EXAMPLES -->
 ## Usage
 
 For an example of a useable script and a devices inventory file please refer to the example_script.py and devices.yaml files in [examples](https://github.com/adraf82/hp_procurvearuba/tree/master/examples)
