@@ -1,7 +1,7 @@
 <div id="top"></div>
 
 [![Code style][black-shield]][black-url]
-![PyPI](https://img.shields.io/pypi/v/hp_procurvearuba)
+[![PyPI][python-shield]][python-url]
 
 <!-- PROJECT LOGO -->
 <br />
@@ -35,10 +35,10 @@
       </ul>
     </li>
     <li>
-      <a href="#getting-started">Getting Started</a>
+      <a href="#installation">Installation</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#getting-started">Getting Started</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -78,6 +78,16 @@ The hp_procurvearuba package can be installed with pip as follows;
 
 ```sh
 pip install hp_procurvearuba
+```
+
+### Prerequisites
+
+External dependencies for the package will be installed with pip. To see the full list of dependencies see requirements.txt [here](https://github.com/adraf82/hp_procurvearuba/blob/master/requirements.txt)
+
+The hp_procurvearuba project uses textfsm from the ntc-templates library for many functions. Set the environment variable NET_TEXTFSM to point to the index file in ntc-templates as below;
+
+```sh
+export NET_TEXTFSM=/path/to/ntc-templates/ntc_templates/templates
 ```
 
 ### Getting Started
@@ -120,16 +130,7 @@ Invoke the function you require;
 hp_obj.sftp_backup_config('192.168.1.3')
 ```
 
-### Prerequisites
-
-External dependencies for the package will be installed with pip. To see the full list of dependencies see requirements.txt [here](https://github.com/adraf82/hp_procurvearuba/blob/master/requirements.txt)
-
-The hp_procurvearuba project uses textfsm from the ntc-templates library for many functions. Set the environment variable NET_TEXTFSM to point to the index file in ntc-templates as below;
-
-```sh
-export NET_TEXTFSM=/path/to/ntc-templates/ntc_templates/templates
-```
-<!-- USAGE EXAMPLES -->
+<!- USAGE EXAMPLES -->
 ## Usage
 
 For an example of a useable script and a devices inventory file please refer to the example_script.py and devices.yaml files in [examples](https://github.com/adraf82/hp_procurvearuba/tree/master/examples)
@@ -175,3 +176,5 @@ Credit goes to the creators and maintainers of the following projects;
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [black-shield]:https://img.shields.io/badge/code%20style-black-000000.svg
 [black-url]:https://github.com/ambv/black
+[python-shield]:https://img.shields.io/pypi/v/hp_procurvearuba
+[python-url]:https://pypi.org/project/hp-procurvearuba
