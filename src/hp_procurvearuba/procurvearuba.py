@@ -811,3 +811,16 @@ class HP:
             if "POE+ Connected" in line:
                 print(f"{self.hostname:^10}{'YES':^10}")
                 print("-" * 25)
+
+    def list_vlans_on_trunk(self):
+        """Lists the vlans on switch trunk ports."""
+        print("-" * 25)
+        print(f"{'HOSTNAME':^10}{'TRUNK PORT':^10}")
+        output = self.send_command("show lldp info remote-device", use_textfsm=True)
+        for i in output:
+            if i['neighbor_sysname'] != None:
+                port_number = i['local_port']
+                vlan_output = self.send_command('show vlan ports ' + port_number)
+                print(i['neighbor_sysname'], vlan_output)
+               #print((self.hostname, i['local_port'])
+
