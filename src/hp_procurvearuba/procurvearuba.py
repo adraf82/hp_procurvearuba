@@ -814,13 +814,28 @@ class HP:
 
     def list_vlans_on_trunk(self):
         """Lists the vlans on switch trunk ports."""
+        print()
         print("-" * 25)
-        print(f"{'HOSTNAME':^10}{'TRUNK PORT':^10}")
+        print(f"{'HOSTNAME':^25}")
+        print("-" * 25)
+        print(f"{self.hostname:^25}")
+        print("-" * 25)
+        print(f"{'NEIGHBOR':^10}{'TRUNK PORT':^10}")
+        print("-" * 25)
         output = self.send_command("show lldp info remote-device", use_textfsm=True)
         for i in output:
             if i['neighbor_sysname'] != None:
+                neighbor_sysname = i['neighbor_sysname']
                 port_number = i['local_port']
+                print(f"{neighbor_sysname:^10}{port_number:^10}")
                 vlan_output = self.send_command('show vlan ports ' + port_number)
-                print(i['neighbor_sysname'], vlan_output)
-               #print((self.hostname, i['local_port'])
-
+                vlan_output = vlan_output.strip()
+                vlan_output = vlan_output.splitlines()
+                print("-" * 25)
+                print(f"{'VLAN':^10}{'VLAN_NAME':10}")
+                print("-" * 25)
+                for vlan in vlan_output[4:]:
+                    vlan, vlan_name, *extra = vlan.split()
+                    print(f"{vlan:^10}{vlan_name:^10}")
+                    print("-" * 25)
+        
