@@ -824,11 +824,11 @@ class HP:
         print("-" * 25)
         output = self.send_command("show lldp info remote-device", use_textfsm=True)
         for i in output:
-            if i['neighbor_sysname'] != None:
-                neighbor_sysname = i['neighbor_sysname']
-                port_number = i['local_port']
+            if i["neighbor_sysname"] != None:
+                neighbor_sysname = i["neighbor_sysname"]
+                port_number = i["local_port"]
                 print(f"{neighbor_sysname:^10}{port_number:^10}")
-                vlan_output = self.send_command('show vlan ports ' + port_number)
+                vlan_output = self.send_command("show vlan ports " + port_number)
                 vlan_output = vlan_output.strip()
                 vlan_output = vlan_output.splitlines()
                 print("-" * 25)
@@ -838,4 +838,38 @@ class HP:
                     vlan, vlan_name, *extra = vlan.split()
                     print(f"{vlan:^10}{vlan_name:^10}")
                     print("-" * 25)
-        
+
+    def find_vlans_on_trunk(self, trunk_vlan):
+        """searches to find if the vlan is on a trunk port
+
+        Parameters
+        ----------
+        trunk_vlan : int
+                   Specify the trunk vlan
+
+        """
+        print()
+        print("-" * 25)
+        print(f"{'HOSTNAME':^25}")
+        print("-" * 25)
+        print(f"{self.hostname:^25}")
+        print("-" * 25)
+        print(f"{'NEIGHBOR':^10}{'TRUNK PORT':^10}")
+        print("-" * 25)
+        output = self.send_command("show lldp info remote-device", use_textfsm=True)
+        for i in output:
+            if i["neighbor_sysname"] != None:
+                neighbor_sysname = i["neighbor_sysname"]
+                port_number = i["local_port"]
+                print(f"{neighbor_sysname:^10}{port_number:^10}")
+                vlan_output = self.send_command("show vlan ports " + port_number)
+                vlan_output = vlan_output.strip()
+                vlan_output = vlan_output.splitlines()
+                print("-" * 25)
+                print(f"{'VLAN':^10}{'VLAN_NAME':10}")
+                print("-" * 25)
+                for vlan in vlan_output[4:]:
+                    vlan, vlan_name, *extra = vlan.split()
+                    if str(trunk_vlan) in vlan:
+                        print(f"{vlan:^10}{vlan_name:^10}")
+                        print("-" * 25)
