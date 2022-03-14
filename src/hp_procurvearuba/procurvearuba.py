@@ -838,15 +838,14 @@ class HP:
                     vlan, vlan_name, *extra = vlan.split()
                     print(f"{vlan:^10}{vlan_name:^10}")
                     print("-" * 25)
-
+        
     def find_vlans_on_trunk(self, trunk_vlan):
         """searches to find if the vlan is on a trunk port
 
         Parameters
         ----------
-        trunk_vlan : int
+        trunk_vlan : list
                    Specify the trunk vlan
-
         """
         print()
         print("-" * 25)
@@ -870,6 +869,9 @@ class HP:
                 print("-" * 25)
                 for vlan in vlan_output[4:]:
                     vlan, vlan_name, *extra = vlan.split()
-                    if str(trunk_vlan) in vlan:
-                        print(f"{vlan:^10}{vlan_name:^10}")
-                        print("-" * 25)
+                    for t in trunk_vlan:
+                        if str(t) in vlan:
+                            print(f"{vlan:^10}{vlan_name:^10}")
+                            print("-" * 25)
+            
+
