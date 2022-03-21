@@ -873,5 +873,30 @@ class HP:
                         if str(t) in vlan:
                             print(f"{vlan:^10}{vlan_name:^10}")
                             print("-" * 25)
-            
+       
+    def find_trunk_port_speed(self):
+         """finds the trunk port speed."""
+         print()
+         print("-" * 45)
+         print(f"{'HOSTNAME':^45}")
+         print("-" * 45)
+         print(f"{self.hostname:^45}")
+         print("-" * 45)
+         print(f"{'NEIGHBOR':^15}{'TRUNK PORT':^15}{'PORT SPEED':^15}")
+         print("-" * 45)
+         output = self.send_command("show lldp info remote-device", use_textfsm=True)
+         for i in output:
+            if i["neighbor_sysname"] != None:
+                 neighbor_sysname = i["neighbor_sysname"]
+                 port_number = i["local_port"]
+                #print(f"{neighbor_sysname:^10}{port_number:^10}")
+                 int_output = self.send_command_timing("show int brief", use_textfsm=True)
+                 for i in int_output:
+                     if port_number == i['port']:
+                         type = i['type']
+                         print(f"{neighbor_sysname:^15}{port_number:^15}{type:^15}")
+                         print("-" * 45)
+                         print()
+
+
 
