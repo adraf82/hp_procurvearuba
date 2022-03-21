@@ -824,7 +824,7 @@ class HP:
         print("-" * 25)
         output = self.send_command("show lldp info remote-device", use_textfsm=True)
         for i in output:
-            if i["neighbor_sysname"] != None:
+            if i["neighbor_sysname"] is not None:
                 neighbor_sysname = i["neighbor_sysname"]
                 port_number = i["local_port"]
                 print(f"{neighbor_sysname:^10}{port_number:^10}")
@@ -857,7 +857,7 @@ class HP:
         print("-" * 25)
         output = self.send_command("show lldp info remote-device", use_textfsm=True)
         for i in output:
-            if i["neighbor_sysname"] != None:
+            if i["neighbor_sysname"] is not None:
                 neighbor_sysname = i["neighbor_sysname"]
                 port_number = i["local_port"]
                 print(f"{neighbor_sysname:^10}{port_number:^10}")
@@ -886,7 +886,7 @@ class HP:
         print("-" * 45)
         output = self.send_command("show lldp info remote-device", use_textfsm=True)
         for i in output:
-            if i["neighbor_sysname"] != None:
+            if i["neighbor_sysname"] is not None:
                 neighbor_sysname = i["neighbor_sysname"]
                 port_number = i["local_port"]
                 # print(f"{neighbor_sysname:^10}{port_number:^10}")
@@ -895,7 +895,7 @@ class HP:
                 )
                 for i in int_output:
                     if port_number == i["port"]:
-                        type = i["type"]
-                        print(f"{neighbor_sysname:^15}{port_number:^15}{type:^15}")
+                        type = i["mode"]
+                        print(f"{neighbor_sysname:^15}{port_number:^15}{mode:^15}")
                         print("-" * 45)
                         print()
