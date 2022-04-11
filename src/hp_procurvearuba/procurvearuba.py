@@ -895,7 +895,12 @@ class HP:
                 )
                 for i in int_output:
                     if port_number == i["port"]:
-                        type = i["mode"]
+                        mode = i["mode"]
                         print(f"{neighbor_sysname:^15}{port_number:^15}{mode:^15}")
                         print("-" * 45)
                         print()
+
+    def find_ntp_config(self):
+        ntp_output = self.send_command_timing('show run').strip()
+        ntp_server = re.search(r"^(?P<ntp>ntp)", ntp_output, flags=re.M)
+        print(f"{self.hostname:^10}{ntp_server.group('ntp'):^10}")
