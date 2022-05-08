@@ -254,3 +254,13 @@ def test_find_poe_switch_status(hp_connect, capsys):
     hp_connect.find_poe_switch_status()
     captured = capsys.readouterr()
     assert hp_connect.hostname in captured.out
+
+def test_find_ntp_config(hp_connect, capsys):
+    hp_connect.find_ntp_config()
+    captured = capsys.readouterr()
+    assert '192.168.1.1' in captured.out
+
+def test_find_ntp_status(hp_connect, capsys):
+    hp_connect.find_ntp_status()
+    captured = capsys.readouterr()
+    assert 'Disabled' in captured.out
