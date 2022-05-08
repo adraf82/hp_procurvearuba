@@ -5,7 +5,7 @@ devices:
   password: password
   username: username
 - device_type: hp_procurve
-  ip: 192.168.1.2
+  ip: 192.168.1.1
   hostname: HP_2
   password: password
   username: username

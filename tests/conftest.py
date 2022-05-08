@@ -1,4 +1,4 @@
-from hp_procurvearuba import HP
+from procurvearuba import HP
 import yaml
 import pytest
 import mock

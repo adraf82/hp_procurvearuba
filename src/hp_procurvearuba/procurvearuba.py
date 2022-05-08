@@ -905,9 +905,13 @@ class HP:
         print("-" * 30)
         print(f"{'HOSTNAME':^15}{'NTP SERVER':^15}")
         print("-" * 30)
-        ntp_output = self.send_command_timing('show run').strip()
+        ntp_output = self.send_command_timing("show run").strip()
         try:
-            ntp_server = re.search(r"^(ntp server (?P<ntp>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}))", ntp_output, flags=re.M)
+            ntp_server = re.search(
+                r"^(ntp server (?P<ntp>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}))",
+                ntp_output,
+                flags=re.M,
+            )
             print(f"{self.hostname:^15}{ntp_server.group('ntp'):^15}")
         except AttributeError:
             print()
@@ -917,9 +921,13 @@ class HP:
         print("-" * 30)
         print(f"{'HOSTNAME':^15}{'NTP STATUS':^15}")
         print("-" * 30)
-        ntp_output = self.send_command_timing('show ntp status').strip()
+        ntp_output = self.send_command_timing("show ntp status").strip()
         try:
-            ntp_output = re.search(r"^\s+NTP Status\s+:\s+(?P<ntp_status>Disabled|Enabled)\s+.*", ntp_output, flags=re.M)
+            ntp_output = re.search(
+                r"^\s+NTP Status\s+:\s+(?P<ntp_status>Disabled|Enabled)\s+.*",
+                ntp_output,
+                flags=re.M,
+            )
             print(f"{self.hostname:^15}{ntp_output.group('ntp_status'):^15}")
         except AttributeError:
             print()
