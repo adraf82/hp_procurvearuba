@@ -19,7 +19,7 @@ class HP:
 
     def_delegators(
         "HPProcurveSSH",
-        "send_command_timing, send_command, find_prompt, disconnect",
+        "send_multiline_timing, send_command, find_prompt, disconnect",
     )
 
     def __init__(self, hostname, *args, **kwargs):
@@ -45,7 +45,7 @@ class HP:
 
     def find_stp_mode(self):
         """Finds the spanning tree mode of the switch"""
-        output = self.send_command_timing("show spanning-tree")
+        output = self.send_command("show spanning-tree")
         print("-" * 20)
         print(f"{'HOSTNAME':^10}{'STP_MODE':^10}")
         print("-" * 20)
@@ -82,7 +82,7 @@ class HP:
     def find_stp_disabled_switch(self):
         """Finds the switch which has spanning tree disabled."""
         print("-" * 20)
-        output = self.send_command_timing("show spanning-tree")
+        output = self.send_command("show spanning-tree")
         print(f"{'STP_DISABLED_SWITCH':^20}")
         print("-" * 20)
         try:
@@ -99,7 +99,7 @@ class HP:
 
     def find_stp_enabled_switch(self):
         """Finds and displays the switch which has spanning tree enabled."""
-        output = self.send_command_timing("show spanning-tree")
+        output = self.send_command("show spanning-tree")
         print("-" * 20)
         print(f"{'STP_ENABLED_SWITCH':^20}")
         print("-" * 20)
@@ -307,7 +307,7 @@ class HP:
         print("-" * 40)
         print(f"{'HOSTNAME':^10}{'PORT':^10}{'MAC_ADDRESS':^10}{'VLAN':^10}")
         print("-" * 40)
-        output = self.send_command_timing("show mac-address", use_textfsm=True)
+        output = self.send_command("show mac-address", use_textfsm=True)
         for mac in output:
             for m in mac_addresses:
                 if mac["mac"] == m:
@@ -367,7 +367,7 @@ class HP:
 
     def find_intrusion_alerts(self):
         """Finds and displays port security intrusion alarms on an interface."""
-        output = self.send_command("show interfaces brief", use_textfsm=True)
+        output = self.send_command("show int brief", use_textfsm=True)
         print("-" * 40)
         print(f"{'HOSTNAME':^10}{'PORT':^10}{'INTRUSION':^10}{'STATUS':^10}")
         print("-" * 40)
