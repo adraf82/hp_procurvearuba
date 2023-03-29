@@ -343,7 +343,7 @@ class HP:
         """
         print("-" * 20)
         print(f"{'HOSTNAME':^10}{'VLAN':^10}")
-        output = self.send_command_timing("show vlans", use_textfsm=True)
+        output = self.send_command("show vlans", use_textfsm=True)
         print("-" * 20)
         for v in output:
             for vlan_num in vlan:
@@ -356,7 +356,7 @@ class HP:
         print("-" * 40)
         print(f"{'HOSTNAME':^10}{'PORT':^10}{'ERRORS_RX':^10}{'DROPS_TX':^10}")
         print("-" * 40)
-        output = self.send_command_timing("show interfaces", use_textfsm=True)
+        output = self.send_command("show interfaces", use_textfsm=True)
         for errors in output:
             if errors["errors_rx"] > "0" or errors["drops_tx"] > "0":
                 print(
@@ -367,7 +367,7 @@ class HP:
 
     def find_intrusion_alerts(self):
         """Finds and displays port security intrusion alarms on an interface."""
-        output = self.send_command_timing("show interfaces brief", use_textfsm=True)
+        output = self.send_command("show interfaces brief", use_textfsm=True)
         print("-" * 40)
         print(f"{'HOSTNAME':^10}{'PORT':^10}{'INTRUSION':^10}{'STATUS':^10}")
         print("-" * 40)
