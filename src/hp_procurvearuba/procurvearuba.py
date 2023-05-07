@@ -314,7 +314,7 @@ class HP:
                     mac_addr = mac["mac"]
                     ports = mac["port"]
                     vlan = mac["vlan"]
-                    output_2 = self.send_command_timing("show mac-address " + ports)
+                    output_2 = self.send_command("show mac-address " + ports)
                     line_output = output_2.splitlines()
                     if multiple_mac_port:
                         for line in line_output:
@@ -635,7 +635,7 @@ class HP:
         print("-" * 12)
         print(f"{'PORT':5}{'STATUS':5}")
         print("-" * 12)
-        output = self.send_command_timing("show int brief", use_textfsm=True)
+        output = self.send_command("show int brief", use_textfsm=True)
         count = 0
         for ports in output:
             if ports["status"] == "Down":
@@ -652,7 +652,7 @@ class HP:
         print("-" * 12)
         print(f"{'PORT':5}{'STATUS':5}")
         print("-" * 12)
-        output = self.send_command_timing("show int brief", use_textfsm=True)
+        output = self.send_command("show int brief", use_textfsm=True)
         count = 0
         for ports in output:
             if ports["status"] == "Up":
@@ -673,7 +673,7 @@ class HP:
         print("-" * 70)
         print(f"{'HOSTNAME':^20}{'MAC_ADDRESS':>20}{'IP_ADDRESS':>20}")
         print("-" * 70)
-        output = self.send_command_timing("show arp", use_textfsm=True)
+        output = self.send_command("show arp", use_textfsm=True)
         for ip in output:
             for i in mac_address:
                 if ip["mac"] == i:
@@ -691,7 +691,7 @@ class HP:
         print("-" * 70)
         print(f"{'HOSTNAME':^20}{'MAC_ADDRESS':>20}{'IP_ADDRESS':>20}")
         print("-" * 70)
-        output = self.send_command_timing("show arp", use_textfsm=True)
+        output = self.send_command("show arp", use_textfsm=True)
         for ip_addr in output:
             for i in ip_address:
                 if ip_addr["ip"] == i:
@@ -709,7 +709,7 @@ class HP:
             f"{'PORT':^20}{'LEARN_MODE':^20}{'ACTION':^20}{'EAVESDROP_PREVENTION':^25}"
         )
         print("-" * 85)
-        output = self.send_command_timing("show port-security", use_textfsm=True)
+        output = self.send_command("show port-security", use_textfsm=True)
         for port in output:
             if port["learn_mode"] != "Continuous":
                 print(
@@ -727,7 +727,7 @@ class HP:
             f"{'PORT':^20}{'LEARN_MODE':^20}{'ACTION':^20}{'EAVESDROP_PREVENTION':^25}"
         )
         print("-" * 85)
-        output = self.send_command_timing("show port-security", use_textfsm=True)
+        output = self.send_command("show port-security", use_textfsm=True)
         for port in output:
             if port["learn_mode"] == "Continuous":
                 print(
@@ -747,7 +747,7 @@ class HP:
         print("-" * 20)
         print(f"{'HOSTNAME':^10}{'JUMBO_VLAN':^10}")
         print("-" * 20)
-        output = self.send_command_timing("show vlans", use_textfsm=True)
+        output = self.send_command("show vlans", use_textfsm=True)
         for j in output:
             for v in jumbo_vlan:
                 if j["jumbo"] == "Yes" and j["vlan_id"] == str(v):
@@ -765,7 +765,7 @@ class HP:
         print("-" * 20)
         print(f"{'HOSTNAME':^10}{'VOICE_VLAN':^10}")
         print("-" * 20)
-        output = self.send_command_timing("show vlans", use_textfsm=True)
+        output = self.send_command("show vlans", use_textfsm=True)
         for v in output:
             if v["voice"] == "Yes" and v["vlan_id"] == str(voice_vlan):
                 print(f"{self.hostname:^10}{v['vlan_id']:^10}")
@@ -777,6 +777,7 @@ class HP:
         print(f"{self.hostname :^25}")
         print("-" * 25)
         print(f"{'PORT':^10}{'POE_ENABLED':^10}")
+        print("_" * 25)
         output = self.send_command("show power-over-ethernet brief")
         output = output.strip().splitlines()
         for line in output:
@@ -889,7 +890,7 @@ class HP:
             if i["neighbor_sysname"] is not None:
                 neighbor_sysname = i["neighbor_sysname"]
                 port_number = i["local_port"]
-                int_output = self.send_command_timing(
+                int_output = self.send_command(
                     "show int brief", use_textfsm=True
                 )
                 for i in int_output:
@@ -905,7 +906,7 @@ class HP:
         print("-" * 30)
         print(f"{'HOSTNAME':^15}{'NTP SERVER':^15}")
         print("-" * 30)
-        ntp_output = self.send_command_timing("show run").strip()
+        ntp_output = self.send_command("show run").strip()
         try:
             ntp_server = re.search(
                 r"^(ntp server (?P<ntp>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}))",
@@ -922,7 +923,7 @@ class HP:
         print("-" * 30)
         print(f"{'HOSTNAME':^15}{'NTP STATUS':^15}")
         print("-" * 30)
-        ntp_output = self.send_command_timing("show ntp status").strip()
+        ntp_output = self.send_command("show ntp status").strip()
         try:
             ntp_output = re.search(
                 r"^\s+NTP Status\s+:\s+(?P<ntp_status>Disabled|Enabled)\s+.*",
