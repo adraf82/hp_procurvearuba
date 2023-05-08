@@ -392,7 +392,7 @@ class HP:
                  Specify the password of the sftp server
         """
         if username and password:
-            output = self.send_command_timing(
+            cmd_list = [
                 "copy startup-config sftp "
                 + username
                 + "@"
@@ -400,24 +400,26 @@ class HP:
                 + " "
                 + str(self.hostname)
                 + "_"
-                + str(date.today())
-            )
-            output += self.send_command_timing(password)
+                + str(date.today()),
+                password
+                ]
+            output = self.send_multiline_timing(cmd_list)
             if "SFTP download" in output:
                 # if self.find_prompt():
                 print(
                     f"Startup configuration successfully backed up for {self.hostname}"
                 )
         else:
-            output = self.send_command_timing(
+            cmd_list = [ 
                 "copy startup-config sftp "
                 + sftp_server_ip
                 + " "
                 + str(self.hostname)
                 + "_"
-                + str(date.today())
-            )
-            output += self.send_command_timing("\n")
+                + str(date.today()),
+                "\n"
+                ]
+            output = self.send_multiline_timing(cmd_list)
             if "SFTP download" in output:
                 # if self.find_prompt():
                 print(
@@ -439,23 +441,28 @@ class HP:
                     Specify the password of the sftp server
         """
         if username and password:
-            output = self.send_command_timing(
+            cmd_list = [
                 "copy sftp startup-config "
                 + username
                 + "@"
                 + sftp_server_ip
                 + " "
-                + filename
-            )
-            output += self.send_command_timing("y")
-            output += self.send_command_timing(password)
+                + filename,
+                "y",
+                password
+                ]
+            output = self.send_multiline_timing(cmd_list)
             print("Rebooting ", self.hostname)
         else:
-            output = self.send_command_timing(
-                "copy sftp startup-config " + sftp_server_ip + " " + filename
-            )
-            output += self.send_command_timing("y")
-            output += self.send_command_timing("\n")
+            cmd_list = [
+                "copy sftp startup-config "
+                + sftp_server_ip + 
+                " "
+                + filename,
+                "y",
+                "\n"
+            ]
+            output = self.send_multiline_timing(cmd_list)
             print("Rebooting ", self.hostname)
 
     def sftp_load_firmware(
@@ -485,7 +492,7 @@ class HP:
                Set to True if switch is to be rebooted after firmware has been loaded
         """
         if username and password:
-            output = self.send_command_timing(
+            cmd_list =[
                 "copy sftp flash "
                 + username
                 + "@"
@@ -493,26 +500,31 @@ class HP:
                 + " "
                 + filename
                 + " "
-                + boot_image
-            )
-            output += self.send_command_timing("y")
-            output += self.send_command_timing(password, delay_factor=10)
+                + boot_image,
+                "y",
+                password
+                ]
+            output = self.send_multiline_timing(cmd_list)
             print("Firmware loaded for ", self.hostname)
             if reboot:
-                self.send_command_timing("boot system flash " + boot_image)
-                self.send_command_timing("y")
+                cmd_list = [
+                        "boot system flash " + boot_image,
+                        "y"
+                        ]
+                self.send_multiline_timing(cmd_list)
                 print("Rebooting ", self.hostname)
                 self.disconnect()
         else:
-            output = self.send_command_timing(
-                "copy sftp flash " + sftp_server_ip + " " + filename + " " + boot_image
-            )
-            output += self.send_command_timing("y")
-            output += self.send_command_timing("\n", delay_factor=10)
+            cmd_list = [
+                "copy sftp flash " + sftp_server_ip + " " + filename + " " + boot_image,
+                "y",
+                "\n"
+                ]
+            self.send_multiline_timing(cmd_list)
             print("Firmware loaded for ", self.hostname)
             if reboot:
-                self.send_command_timing("boot system flash " + boot_image)
-                self.send_command_timing("y")
+                cmd_list = ["boot system flash " + boot_image, "y"]
+                self.send_multiline_timing(cmd_list)
                 print("Rebooting ", self.hostname)
                 self.disconnect()
 
