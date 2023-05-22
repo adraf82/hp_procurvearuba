@@ -536,14 +536,15 @@ class HP:
         tftp_server_ip : str
                       Specify the tftp server IP address
         """
-        output = self.send_command_timing(
+        cmd_list  = [
             "copy startup-config tftp "
             + tftp_server_ip
             + " "
             + self.hostname
             + "_"
             + str(date.today())
-        )
+            ]
+        output = self.send_multiline_timing(cmd_list)
         if "TFTP download" in output:
             print(f"Startup configuration successfully backed up for {self.hostname}")
 
