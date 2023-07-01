@@ -19,7 +19,7 @@ class HP:
 
     def_delegators(
         "HPProcurveSSH",
-        "send_command_timing, send_command, find_prompt, disconnect",
+        "send_multiline_timing, send_command, find_prompt, disconnect",
     )
 
     def __init__(self, hostname, *args, **kwargs):
@@ -45,7 +45,7 @@ class HP:
 
     def find_stp_mode(self):
         """Finds the spanning tree mode of the switch"""
-        output = self.send_command_timing("show spanning-tree")
+        output = self.send_command("show spanning-tree")
         print("-" * 20)
         print(f"{'HOSTNAME':^10}{'STP_MODE':^10}")
         print("-" * 20)
@@ -82,7 +82,7 @@ class HP:
     def find_stp_disabled_switch(self):
         """Finds the switch which has spanning tree disabled."""
         print("-" * 20)
-        output = self.send_command_timing("show spanning-tree")
+        output = self.send_command("show spanning-tree")
         print(f"{'STP_DISABLED_SWITCH':^20}")
         print("-" * 20)
         try:
@@ -99,7 +99,7 @@ class HP:
 
     def find_stp_enabled_switch(self):
         """Finds and displays the switch which has spanning tree enabled."""
-        output = self.send_command_timing("show spanning-tree")
+        output = self.send_command("show spanning-tree")
         print("-" * 20)
         print(f"{'STP_ENABLED_SWITCH':^20}")
         print("-" * 20)
@@ -307,14 +307,14 @@ class HP:
         print("-" * 40)
         print(f"{'HOSTNAME':^10}{'PORT':^10}{'MAC_ADDRESS':^10}{'VLAN':^10}")
         print("-" * 40)
-        output = self.send_command_timing("show mac-address", use_textfsm=True)
+        output = self.send_command("show mac-address", use_textfsm=True)
         for mac in output:
             for m in mac_addresses:
                 if mac["mac"] == m:
                     mac_addr = mac["mac"]
                     ports = mac["port"]
                     vlan = mac["vlan"]
-                    output_2 = self.send_command_timing("show mac-address " + ports)
+                    output_2 = self.send_command("show mac-address " + ports)
                     line_output = output_2.splitlines()
                     if multiple_mac_port:
                         for line in line_output:
@@ -343,7 +343,7 @@ class HP:
         """
         print("-" * 20)
         print(f"{'HOSTNAME':^10}{'VLAN':^10}")
-        output = self.send_command_timing("show vlans", use_textfsm=True)
+        output = self.send_command("show vlans", use_textfsm=True)
         print("-" * 20)
         for v in output:
             for vlan_num in vlan:
@@ -356,7 +356,7 @@ class HP:
         print("-" * 40)
         print(f"{'HOSTNAME':^10}{'PORT':^10}{'ERRORS_RX':^10}{'DROPS_TX':^10}")
         print("-" * 40)
-        output = self.send_command_timing("show interfaces", use_textfsm=True)
+        output = self.send_command("show interfaces", use_textfsm=True)
         for errors in output:
             if errors["errors_rx"] > "0" or errors["drops_tx"] > "0":
                 print(
@@ -367,7 +367,7 @@ class HP:
 
     def find_intrusion_alerts(self):
         """Finds and displays port security intrusion alarms on an interface."""
-        output = self.send_command_timing("show interfaces brief", use_textfsm=True)
+        output = self.send_command("show int brief", use_textfsm=True)
         print("-" * 40)
         print(f"{'HOSTNAME':^10}{'PORT':^10}{'INTRUSION':^10}{'STATUS':^10}")
         print("-" * 40)
@@ -392,7 +392,7 @@ class HP:
                  Specify the password of the sftp server
         """
         if username and password:
-            output = self.send_command_timing(
+            cmd_list = [
                 "copy startup-config sftp "
                 + username
                 + "@"
@@ -400,24 +400,26 @@ class HP:
                 + " "
                 + str(self.hostname)
                 + "_"
-                + str(date.today())
-            )
-            output += self.send_command_timing(password)
+                + str(date.today()),
+                password,
+            ]
+            output = self.send_multiline_timing(cmd_list)
             if "SFTP download" in output:
                 # if self.find_prompt():
                 print(
                     f"Startup configuration successfully backed up for {self.hostname}"
                 )
         else:
-            output = self.send_command_timing(
+            cmd_list = [
                 "copy startup-config sftp "
                 + sftp_server_ip
                 + " "
                 + str(self.hostname)
                 + "_"
-                + str(date.today())
-            )
-            output += self.send_command_timing("\n")
+                + str(date.today()),
+                "\n",
+            ]
+            output = self.send_multiline_timing(cmd_list)
             if "SFTP download" in output:
                 # if self.find_prompt():
                 print(
@@ -439,23 +441,25 @@ class HP:
                     Specify the password of the sftp server
         """
         if username and password:
-            output = self.send_command_timing(
+            cmd_list = [
                 "copy sftp startup-config "
                 + username
                 + "@"
                 + sftp_server_ip
                 + " "
-                + filename
-            )
-            output += self.send_command_timing("y")
-            output += self.send_command_timing(password)
+                + filename,
+                "y",
+                password,
+            ]
+            self.send_multiline_timing(cmd_list)
             print("Rebooting ", self.hostname)
         else:
-            output = self.send_command_timing(
-                "copy sftp startup-config " + sftp_server_ip + " " + filename
-            )
-            output += self.send_command_timing("y")
-            output += self.send_command_timing("\n")
+            cmd_list = [
+                "copy sftp startup-config " + sftp_server_ip + " " + filename,
+                "y",
+                "\n",
+            ]
+            self.send_multiline_timing(cmd_list)
             print("Rebooting ", self.hostname)
 
     def sftp_load_firmware(
@@ -485,7 +489,7 @@ class HP:
                Set to True if switch is to be rebooted after firmware has been loaded
         """
         if username and password:
-            output = self.send_command_timing(
+            cmd_list = [
                 "copy sftp flash "
                 + username
                 + "@"
@@ -493,26 +497,28 @@ class HP:
                 + " "
                 + filename
                 + " "
-                + boot_image
-            )
-            output += self.send_command_timing("y")
-            output += self.send_command_timing(password, delay_factor=10)
+                + boot_image,
+                "y",
+                password,
+            ]
+            self.send_multiline_timing(cmd_list)
             print("Firmware loaded for ", self.hostname)
-            if reboot:
-                self.send_command_timing("boot system flash " + boot_image)
-                self.send_command_timing("y")
+            if reboot is True:
+                cmd_list = ["boot system flash " + boot_image, "y"]
+                self.send_multiline_timing(cmd_list)
                 print("Rebooting ", self.hostname)
                 self.disconnect()
         else:
-            output = self.send_command_timing(
-                "copy sftp flash " + sftp_server_ip + " " + filename + " " + boot_image
-            )
-            output += self.send_command_timing("y")
-            output += self.send_command_timing("\n", delay_factor=10)
+            cmd_list = [
+                "copy sftp flash " + sftp_server_ip + " " + filename + " " + boot_image,
+                "y",
+                "\n",
+            ]
+            self.send_multiline_timing(cmd_list)
             print("Firmware loaded for ", self.hostname)
-            if reboot:
-                self.send_command_timing("boot system flash " + boot_image)
-                self.send_command_timing("y")
+            if reboot is True:
+                cmd_list = ["boot system flash " + boot_image, "y"]
+                self.send_multiline_timing(cmd_list)
                 print("Rebooting ", self.hostname)
                 self.disconnect()
 
@@ -524,14 +530,15 @@ class HP:
         tftp_server_ip : str
                       Specify the tftp server IP address
         """
-        output = self.send_command_timing(
+        cmd_list = [
             "copy startup-config tftp "
             + tftp_server_ip
             + " "
             + self.hostname
             + "_"
             + str(date.today())
-        )
+        ]
+        output = self.send_multiline_timing(cmd_list)
         if "TFTP download" in output:
             print(f"Startup configuration successfully backed up for {self.hostname}")
 
@@ -545,11 +552,12 @@ class HP:
         filename : str
                    Specify the filename of the configuration to be loaded
         """
-        output = self.send_command_timing(
-            "copy tftp startup-config " + tftp_server_ip + " " + filename
-        )
-        output += self.send_command_timing("y")
-        output += self.send_command_timing("\n")
+        cmd_list = [
+            "copy tftp startup-config " + tftp_server_ip + " " + filename,
+            "y",
+            "\n",
+        ]
+        self.send_multiline_timing(cmd_list)
         print("Rebooting ", self.hostname)
 
     def tftp_load_firmware(self, tftp_server_ip, filename, boot_image, reboot=False):
@@ -566,15 +574,16 @@ class HP:
         reboot : bool
                Set to True if switch is to be rebooted after firmware has been loaded
         """
-        output = self.send_command_timing(
-            "copy tftp flash " + tftp_server_ip + " " + filename + " " + boot_image
-        )
-        output += self.send_command_timing("y")
-        output += self.send_command_timing("\n", delay_factor=10)
+        cmd_list = [
+            "copy tftp flash " + tftp_server_ip + " " + filename + " " + boot_image,
+            "y",
+            "\n",
+        ]
+        self.send_multiline_timing(cmd_list)
         print("Firmware loaded for ", self.hostname)
-        if reboot:
-            self.send_command_timing("boot system flash " + boot_image)
-            self.send_command_timing("y")
+        if reboot is True:
+            cmd_list = ["boot system flash " + boot_image, "y"]
+            self.send_multiline_timing(cmd_list)
             print("Rebooting ", self.hostname)
             self.disconnect()
 
@@ -635,7 +644,7 @@ class HP:
         print("-" * 12)
         print(f"{'PORT':5}{'STATUS':5}")
         print("-" * 12)
-        output = self.send_command_timing("show int brief", use_textfsm=True)
+        output = self.send_command("show int brief", use_textfsm=True)
         count = 0
         for ports in output:
             if ports["status"] == "Down":
@@ -652,7 +661,7 @@ class HP:
         print("-" * 12)
         print(f"{'PORT':5}{'STATUS':5}")
         print("-" * 12)
-        output = self.send_command_timing("show int brief", use_textfsm=True)
+        output = self.send_command("show int brief", use_textfsm=True)
         count = 0
         for ports in output:
             if ports["status"] == "Up":
@@ -673,7 +682,7 @@ class HP:
         print("-" * 70)
         print(f"{'HOSTNAME':^20}{'MAC_ADDRESS':>20}{'IP_ADDRESS':>20}")
         print("-" * 70)
-        output = self.send_command_timing("show arp", use_textfsm=True)
+        output = self.send_command("show arp", use_textfsm=True)
         for ip in output:
             for i in mac_address:
                 if ip["mac"] == i:
@@ -691,7 +700,7 @@ class HP:
         print("-" * 70)
         print(f"{'HOSTNAME':^20}{'MAC_ADDRESS':>20}{'IP_ADDRESS':>20}")
         print("-" * 70)
-        output = self.send_command_timing("show arp", use_textfsm=True)
+        output = self.send_command("show arp", use_textfsm=True)
         for ip_addr in output:
             for i in ip_address:
                 if ip_addr["ip"] == i:
@@ -709,7 +718,7 @@ class HP:
             f"{'PORT':^20}{'LEARN_MODE':^20}{'ACTION':^20}{'EAVESDROP_PREVENTION':^25}"
         )
         print("-" * 85)
-        output = self.send_command_timing("show port-security", use_textfsm=True)
+        output = self.send_command("show port-security", use_textfsm=True)
         for port in output:
             if port["learn_mode"] != "Continuous":
                 print(
@@ -727,7 +736,7 @@ class HP:
             f"{'PORT':^20}{'LEARN_MODE':^20}{'ACTION':^20}{'EAVESDROP_PREVENTION':^25}"
         )
         print("-" * 85)
-        output = self.send_command_timing("show port-security", use_textfsm=True)
+        output = self.send_command("show port-security", use_textfsm=True)
         for port in output:
             if port["learn_mode"] == "Continuous":
                 print(
@@ -747,7 +756,7 @@ class HP:
         print("-" * 20)
         print(f"{'HOSTNAME':^10}{'JUMBO_VLAN':^10}")
         print("-" * 20)
-        output = self.send_command_timing("show vlans", use_textfsm=True)
+        output = self.send_command("show vlans", use_textfsm=True)
         for j in output:
             for v in jumbo_vlan:
                 if j["jumbo"] == "Yes" and j["vlan_id"] == str(v):
@@ -765,7 +774,7 @@ class HP:
         print("-" * 20)
         print(f"{'HOSTNAME':^10}{'VOICE_VLAN':^10}")
         print("-" * 20)
-        output = self.send_command_timing("show vlans", use_textfsm=True)
+        output = self.send_command("show vlans", use_textfsm=True)
         for v in output:
             if v["voice"] == "Yes" and v["vlan_id"] == str(voice_vlan):
                 print(f"{self.hostname:^10}{v['vlan_id']:^10}")
@@ -777,6 +786,7 @@ class HP:
         print(f"{self.hostname :^25}")
         print("-" * 25)
         print(f"{'PORT':^10}{'POE_ENABLED':^10}")
+        print("_" * 25)
         output = self.send_command("show power-over-ethernet brief")
         output = output.strip().splitlines()
         for line in output:
@@ -889,9 +899,7 @@ class HP:
             if i["neighbor_sysname"] is not None:
                 neighbor_sysname = i["neighbor_sysname"]
                 port_number = i["local_port"]
-                int_output = self.send_command_timing(
-                    "show int brief", use_textfsm=True
-                )
+                int_output = self.send_command("show int brief", use_textfsm=True)
                 for i in int_output:
                     if port_number == i["port"]:
                         mode = i["mode"]
@@ -905,7 +913,7 @@ class HP:
         print("-" * 30)
         print(f"{'HOSTNAME':^15}{'NTP SERVER':^15}")
         print("-" * 30)
-        ntp_output = self.send_command_timing("show run").strip()
+        ntp_output = self.send_command("show run").strip()
         try:
             ntp_server = re.search(
                 r"^(ntp server (?P<ntp>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}))",
@@ -922,7 +930,7 @@ class HP:
         print("-" * 30)
         print(f"{'HOSTNAME':^15}{'NTP STATUS':^15}")
         print("-" * 30)
-        ntp_output = self.send_command_timing("show ntp status").strip()
+        ntp_output = self.send_command("show ntp status").strip()
         try:
             ntp_output = re.search(
                 r"^\s+NTP Status\s+:\s+(?P<ntp_status>Disabled|Enabled)\s+.*",
