@@ -522,7 +522,7 @@ class HP:
                 ]
             self.send_multiline_timing(cmd_list)
             print("Firmware loaded for ", self.hostname)
-            if reboot:
+            if reboot==True:
                 cmd_list = ["boot system flash " + boot_image, "y"]
                 self.send_multiline_timing(cmd_list)
                 print("Rebooting ", self.hostname)
@@ -558,11 +558,14 @@ class HP:
         filename : str
                    Specify the filename of the configuration to be loaded
         """
-        output = self.send_command_timing(
-            "copy tftp startup-config " + tftp_server_ip + " " + filename
-        )
-        output += self.send_command_timing("y")
-        output += self.send_command_timing("\n")
+        cmd_list = ["copy tftp startup-config "
+                     + tftp_server_ip + 
+                     " "
+                     + filename,
+                     "y",
+                     "\n"
+                     ]
+        output = self.send_multiline_timing(cmd_list)
         print("Rebooting ", self.hostname)
 
     def tftp_load_firmware(self, tftp_server_ip, filename, boot_image, reboot=False):
@@ -579,15 +582,14 @@ class HP:
         reboot : bool
                Set to True if switch is to be rebooted after firmware has been loaded
         """
-        output = self.send_command_timing(
-            "copy tftp flash " + tftp_server_ip + " " + filename + " " + boot_image
-        )
-        output += self.send_command_timing("y")
-        output += self.send_command_timing("\n", delay_factor=10)
+        cmd_list = [
+            "copy tftp flash " + tftp_server_ip + " " + filename + " " + boot_image, "y", "\n"
+            ]
+        self.send_multiline_timing(cmd_list)
         print("Firmware loaded for ", self.hostname)
-        if reboot:
-            self.send_command_timing("boot system flash " + boot_image)
-            self.send_command_timing("y")
+        if reboot==True:
+            cmd_list = ["boot system flash " + boot_image, "y"]
+            self.send_multiline_timing(cmd_list)
             print("Rebooting ", self.hostname)
             self.disconnect()
 
