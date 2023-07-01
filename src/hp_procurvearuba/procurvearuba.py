@@ -401,8 +401,8 @@ class HP:
                 + str(self.hostname)
                 + "_"
                 + str(date.today()),
-                password
-                ]
+                password,
+            ]
             output = self.send_multiline_timing(cmd_list)
             if "SFTP download" in output:
                 # if self.find_prompt():
@@ -410,15 +410,15 @@ class HP:
                     f"Startup configuration successfully backed up for {self.hostname}"
                 )
         else:
-            cmd_list = [ 
+            cmd_list = [
                 "copy startup-config sftp "
                 + sftp_server_ip
                 + " "
                 + str(self.hostname)
                 + "_"
                 + str(date.today()),
-                "\n"
-                ]
+                "\n",
+            ]
             output = self.send_multiline_timing(cmd_list)
             if "SFTP download" in output:
                 # if self.find_prompt():
@@ -449,18 +449,15 @@ class HP:
                 + " "
                 + filename,
                 "y",
-                password
-                ]
+                password,
+            ]
             output = self.send_multiline_timing(cmd_list)
             print("Rebooting ", self.hostname)
         else:
             cmd_list = [
-                "copy sftp startup-config "
-                + sftp_server_ip + 
-                " "
-                + filename,
+                "copy sftp startup-config " + sftp_server_ip + " " + filename,
                 "y",
-                "\n"
+                "\n",
             ]
             output = self.send_multiline_timing(cmd_list)
             print("Rebooting ", self.hostname)
@@ -492,7 +489,7 @@ class HP:
                Set to True if switch is to be rebooted after firmware has been loaded
         """
         if username and password:
-            cmd_list =[
+            cmd_list = [
                 "copy sftp flash "
                 + username
                 + "@"
@@ -502,15 +499,12 @@ class HP:
                 + " "
                 + boot_image,
                 "y",
-                password
-                ]
+                password,
+            ]
             output = self.send_multiline_timing(cmd_list)
             print("Firmware loaded for ", self.hostname)
             if reboot:
-                cmd_list = [
-                        "boot system flash " + boot_image,
-                        "y"
-                        ]
+                cmd_list = ["boot system flash " + boot_image, "y"]
                 self.send_multiline_timing(cmd_list)
                 print("Rebooting ", self.hostname)
                 self.disconnect()
@@ -518,11 +512,11 @@ class HP:
             cmd_list = [
                 "copy sftp flash " + sftp_server_ip + " " + filename + " " + boot_image,
                 "y",
-                "\n"
-                ]
+                "\n",
+            ]
             self.send_multiline_timing(cmd_list)
             print("Firmware loaded for ", self.hostname)
-            if reboot==True:
+            if reboot == True:
                 cmd_list = ["boot system flash " + boot_image, "y"]
                 self.send_multiline_timing(cmd_list)
                 print("Rebooting ", self.hostname)
@@ -536,14 +530,14 @@ class HP:
         tftp_server_ip : str
                       Specify the tftp server IP address
         """
-        cmd_list  = [
+        cmd_list = [
             "copy startup-config tftp "
             + tftp_server_ip
             + " "
             + self.hostname
             + "_"
             + str(date.today())
-            ]
+        ]
         output = self.send_multiline_timing(cmd_list)
         if "TFTP download" in output:
             print(f"Startup configuration successfully backed up for {self.hostname}")
@@ -558,13 +552,11 @@ class HP:
         filename : str
                    Specify the filename of the configuration to be loaded
         """
-        cmd_list = ["copy tftp startup-config "
-                     + tftp_server_ip + 
-                     " "
-                     + filename,
-                     "y",
-                     "\n"
-                     ]
+        cmd_list = [
+            "copy tftp startup-config " + tftp_server_ip + " " + filename,
+            "y",
+            "\n",
+        ]
         output = self.send_multiline_timing(cmd_list)
         print("Rebooting ", self.hostname)
 
@@ -583,11 +575,13 @@ class HP:
                Set to True if switch is to be rebooted after firmware has been loaded
         """
         cmd_list = [
-            "copy tftp flash " + tftp_server_ip + " " + filename + " " + boot_image, "y", "\n"
-            ]
+            "copy tftp flash " + tftp_server_ip + " " + filename + " " + boot_image,
+            "y",
+            "\n",
+        ]
         self.send_multiline_timing(cmd_list)
         print("Firmware loaded for ", self.hostname)
-        if reboot==True:
+        if reboot == True:
             cmd_list = ["boot system flash " + boot_image, "y"]
             self.send_multiline_timing(cmd_list)
             print("Rebooting ", self.hostname)
@@ -905,9 +899,7 @@ class HP:
             if i["neighbor_sysname"] is not None:
                 neighbor_sysname = i["neighbor_sysname"]
                 port_number = i["local_port"]
-                int_output = self.send_command(
-                    "show int brief", use_textfsm=True
-                )
+                int_output = self.send_command("show int brief", use_textfsm=True)
                 for i in int_output:
                     if port_number == i["port"]:
                         mode = i["mode"]
