@@ -451,7 +451,7 @@ class HP:
                 "y",
                 password,
             ]
-            output = self.send_multiline_timing(cmd_list)
+            self.send_multiline_timing(cmd_list)
             print("Rebooting ", self.hostname)
         else:
             cmd_list = [
@@ -459,7 +459,7 @@ class HP:
                 "y",
                 "\n",
             ]
-            output = self.send_multiline_timing(cmd_list)
+            self.send_multiline_timing(cmd_list)
             print("Rebooting ", self.hostname)
 
     def sftp_load_firmware(
@@ -501,9 +501,9 @@ class HP:
                 "y",
                 password,
             ]
-            output = self.send_multiline_timing(cmd_list)
+            self.send_multiline_timing(cmd_list)
             print("Firmware loaded for ", self.hostname)
-            if reboot:
+            if reboot is True:
                 cmd_list = ["boot system flash " + boot_image, "y"]
                 self.send_multiline_timing(cmd_list)
                 print("Rebooting ", self.hostname)
@@ -516,7 +516,7 @@ class HP:
             ]
             self.send_multiline_timing(cmd_list)
             print("Firmware loaded for ", self.hostname)
-            if reboot == True:
+            if reboot is True:
                 cmd_list = ["boot system flash " + boot_image, "y"]
                 self.send_multiline_timing(cmd_list)
                 print("Rebooting ", self.hostname)
@@ -557,7 +557,7 @@ class HP:
             "y",
             "\n",
         ]
-        output = self.send_multiline_timing(cmd_list)
+        self.send_multiline_timing(cmd_list)
         print("Rebooting ", self.hostname)
 
     def tftp_load_firmware(self, tftp_server_ip, filename, boot_image, reboot=False):
@@ -581,7 +581,7 @@ class HP:
         ]
         self.send_multiline_timing(cmd_list)
         print("Firmware loaded for ", self.hostname)
-        if reboot == True:
+        if reboot is True:
             cmd_list = ["boot system flash " + boot_image, "y"]
             self.send_multiline_timing(cmd_list)
             print("Rebooting ", self.hostname)
