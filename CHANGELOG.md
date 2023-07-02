@@ -1,6 +1,23 @@
 # CHANGELOG
 
 ---
+## 2.0.0
+
+### Bug Fixes
+
+_None_
+
+### Breaking Changes
+
+send_multiline_timing command replaces send_command_timing for compatibiity with Netmiko 4
+
+### New Features
+
+_None_
+
+### Internal Changes
+
+_None_
 
 ## 1.1.0
 
@@ -13,6 +30,10 @@ _None_
 _None_
 
 ### New Features
+
+_None_
+
+### Internal Changes
 
 * Includes the following five new functions;
 
