@@ -43,7 +43,7 @@ pyserial==3.5
 pytest==6.2.0
 pytest-mock==3.5.1
 PyYAML==5.3.1
-readme-renderer==35.0
+readme-renderer==34.0
 regex==2020.11.13
 requests==2.27.1
 requests-toolbelt==0.9.1
