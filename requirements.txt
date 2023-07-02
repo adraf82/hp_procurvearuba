@@ -17,7 +17,7 @@ idna==3.3
 importlib-metadata==3.6.0
 importlib-resources==3.3.0
 iniconfig==1.1.1
-jeepney==0.8.0
+jeepney==0.7.1
 keyring==23.5.0
 mccabe==0.6.1
 mock==4.0.3
