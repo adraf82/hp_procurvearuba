@@ -14,7 +14,7 @@ docutils==0.18.1
 forwardable==0.4.1
 future==0.18.2
 idna==3.3
-importlib-metadata==3.3.0
+importlib-metadata==3.6.0
 importlib-resources==3.3.0
 iniconfig==1.1.1
 jeepney==0.8.0
